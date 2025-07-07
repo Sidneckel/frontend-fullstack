@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-deployment
+  namespace: todo-app
   labels:
     app: frontend
 spec:
@@ -18,4 +19,4 @@ spec:
         - name: frontend
           image: sidneckel/frontend:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
