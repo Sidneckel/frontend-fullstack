@@ -1,9 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - deployment.yaml
-  - service.yaml
+- deployment.yaml
+- service.yaml
 
 images:
-  - name: sidneckel/frontend
-    newTag: latest
+- name: frontend
+  newName: sidneckel/frontend
+  newTag: e4af0c0a900d9e60e572aaec9b36752e0e7855be
+- name: sidneckel/frontend
+  newTag: latest
