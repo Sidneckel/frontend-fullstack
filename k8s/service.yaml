@@ -9,5 +9,5 @@ spec:
     app: frontend
   ports:
     - port: 4444        # Porta do serviço (pode ser qualquer uma externa)
-      targetPort: 80    # Porta interna do container
+      targetPort: 4444    # Porta interna do container
       nodePort: 30002   # Porta acessível na sua VM
