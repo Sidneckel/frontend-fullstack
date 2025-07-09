@@ -16,7 +16,7 @@ spec:
         app: frontend
     spec:
       containers:
-        - name: frontend
-          image: sidneckel/frontend:latest
-          ports:
-            - containerPort: 80
+      - name: frontend
+        image: sidneckel/frontend:latest
+        ports:
+        - containerPort: 80     # Porta que o container escuta
