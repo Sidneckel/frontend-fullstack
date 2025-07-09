@@ -19,4 +19,4 @@ spec:
         - name: frontend
           image: sidneckel/frontend:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 4444
