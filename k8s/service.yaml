@@ -8,6 +8,6 @@ spec:
   selector:
     app: frontend
   ports:
-    - port: 8080
-      targetPort: 8080
+    - port: 4444
+      targetPort: 4444
       nodePort: 30002
