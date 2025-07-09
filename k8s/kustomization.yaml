@@ -7,6 +7,6 @@ resources:
 images:
 - name: frontend
   newName: sidneckel/frontend
-  newTag: 491bcd00a11af403f8753f26f3973d16b91ec628
+  newTag: ee4d3bd780f7e45641aef6a70268a591adb04208
 - name: sidneckel/frontend
   newTag: latest
