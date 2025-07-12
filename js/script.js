@@ -2,55 +2,53 @@ const tbody = document.querySelector('tbody');
 const addForm = document.querySelector('.add-form');
 const inputTask = document.querySelector('.input-task');
 
-const fetchTasks = async () => {
-  const response = await fetch('http://10.96.90.39/tasks');
+// ✅ Use o IP público + porta NodePort do backend-service
+const API_URL = 'http://191.52.55.181:30001';
 
-  const tasks = await response.json()
+const fetchTasks = async () => {
+  const response = await fetch(`${API_URL}/tasks`);
+  const tasks = await response.json();
   return tasks;
-}
+};
 
 const addTask = async (event) => {
   event.preventDefault();
 
   const task = { title: inputTask.value };
 
-  await fetch('http://localhost:30001/tasks', {
+  await fetch(`${API_URL}/tasks`, {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(task),
   });
 
-
   loadTasks();
   inputTask.value = '';
-}
+};
 
 const deleteTask = async (id) => {
-  await fetch(`http://localhost:30001/tasks/${id}`, {
+  await fetch(`${API_URL}/tasks/${id}`, {
     method: 'delete',
   });
 
   loadTasks();
-}
+};
 
 const updateTask = async ({ id, title, status }) => {
-
-  await fetch(`http://localhost:30001/tasks/${id}`, {
+  await fetch(`${API_URL}/tasks/${id}`, {
     method: 'put',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ title, status }),
   });
 
   loadTasks();
-}
-
-
+};
 
 const formatDate = (dateUTC) => {
   const options = { dateStyle: 'long', timeStyle: 'short' };
   const date = new Date(dateUTC).toLocaleString('pt-br', options);
   return date;
-}
+};
 
 const createElement = (tag, innerText = '', innerHTML = '') => {
   const element = document.createElement(tag);
@@ -64,7 +62,7 @@ const createElement = (tag, innerText = '', innerHTML = '') => {
   }
 
   return element;
-}
+};
 
 const createSelect = (value) => {
   const options = `
@@ -74,14 +72,11 @@ const createSelect = (value) => {
   `;
 
   const select = createElement('select', '', options);
-
   select.value = value;
-
   return select;
-}
+};
 
 const createRow = (task) => {
-
   const { id, title, created_at, status } = task;
 
   const tr = createElement('tr');
@@ -91,21 +86,18 @@ const createRow = (task) => {
   const tdActions = createElement('td');
 
   const select = createSelect(status);
-
   select.addEventListener('change', ({ target }) => updateTask({ ...task, status: target.value }));
 
   const editButton = createElement('button', '', '<span class="material-symbols-outlined">edit</span>');
   const deleteButton = createElement('button', '', '<span class="material-symbols-outlined">delete</span>');
-  
+
   const editForm = createElement('form');
   const editInput = createElement('input');
-
   editInput.value = title;
   editForm.appendChild(editInput);
-  
+
   editForm.addEventListener('submit', (event) => {
     event.preventDefault();
-    
     updateTask({ id, title: editInput.value, status });
   });
 
@@ -116,11 +108,9 @@ const createRow = (task) => {
 
   editButton.classList.add('btn-action');
   deleteButton.classList.add('btn-action');
-
   deleteButton.addEventListener('click', () => deleteTask(id));
-  
-  tdStatus.appendChild(select);
 
+  tdStatus.appendChild(select);
   tdActions.appendChild(editButton);
   tdActions.appendChild(deleteButton);
 
@@ -130,20 +120,16 @@ const createRow = (task) => {
   tr.appendChild(tdActions);
 
   return tr;
-}
+};
 
 const loadTasks = async () => {
   const tasks = await fetchTasks();
-
   tbody.innerHTML = '';
-
   tasks.forEach((task) => {
     const tr = createRow(task);
     tbody.appendChild(tr);
   });
-}
-
+};
 
 addForm.addEventListener('submit', addTask);
-
 loadTasks();
