@@ -2,65 +2,74 @@ const tbody = document.querySelector('tbody');
 const addForm = document.querySelector('.add-form');
 const inputTask = document.querySelector('.input-task');
 
-// ✅ Use o IP público + porta NodePort do backend-service
 const API_URL = 'http://191.52.55.181:30001';
 
 const fetchTasks = async () => {
-  const response = await fetch(`${API_URL}/tasks`);
-  const tasks = await response.json();
-  return tasks;
+  try {
+    const response = await fetch(`${API_URL}/tasks`);
+    if (!response.ok) throw new Error('Erro ao buscar tarefas');
+    const tasks = await response.json();
+    return tasks;
+  } catch (error) {
+    console.error('Erro no fetchTasks:', error);
+    return [];
+  }
 };
 
 const addTask = async (event) => {
   event.preventDefault();
+  const task = { title: inputTask.value.trim() };
+  if (!task.title) return;
 
-  const task = { title: inputTask.value };
-
-  await fetch(`${API_URL}/tasks`, {
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(task),
-  });
-
-  loadTasks();
-  inputTask.value = '';
+  try {
+    const response = await fetch(`${API_URL}/tasks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(task),
+    });
+    if (!response.ok) throw new Error('Erro ao adicionar tarefa');
+    inputTask.value = '';
+    loadTasks();
+  } catch (error) {
+    console.error('Erro ao adicionar tarefa:', error);
+  }
 };
 
 const deleteTask = async (id) => {
-  await fetch(`${API_URL}/tasks/${id}`, {
-    method: 'delete',
-  });
-
-  loadTasks();
+  try {
+    const response = await fetch(`${API_URL}/tasks/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Erro ao deletar tarefa');
+    loadTasks();
+  } catch (error) {
+    console.error('Erro ao deletar tarefa:', error);
+  }
 };
 
 const updateTask = async ({ id, title, status }) => {
-  await fetch(`${API_URL}/tasks/${id}`, {
-    method: 'put',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, status }),
-  });
-
-  loadTasks();
+  try {
+    const response = await fetch(`${API_URL}/tasks/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, status }),
+    });
+    if (!response.ok) throw new Error('Erro ao atualizar tarefa');
+    loadTasks();
+  } catch (error) {
+    console.error('Erro ao atualizar tarefa:', error);
+  }
 };
 
 const formatDate = (dateUTC) => {
   const options = { dateStyle: 'long', timeStyle: 'short' };
-  const date = new Date(dateUTC).toLocaleString('pt-br', options);
-  return date;
+  return new Date(dateUTC).toLocaleString('pt-BR', options);
 };
 
 const createElement = (tag, innerText = '', innerHTML = '') => {
   const element = document.createElement(tag);
-
-  if (innerText) {
-    element.innerText = innerText;
-  }
-
-  if (innerHTML) {
-    element.innerHTML = innerHTML;
-  }
-
+  if (innerText) element.innerText = innerText;
+  if (innerHTML) element.innerHTML = innerHTML;
   return element;
 };
 
@@ -70,7 +79,6 @@ const createSelect = (value) => {
     <option value="em andamento">em andamento</option>
     <option value="concluída">concluída</option>
   `;
-
   const select = createElement('select', '', options);
   select.value = value;
   return select;
@@ -86,7 +94,9 @@ const createRow = (task) => {
   const tdActions = createElement('td');
 
   const select = createSelect(status);
-  select.addEventListener('change', ({ target }) => updateTask({ ...task, status: target.value }));
+  select.addEventListener('change', ({ target }) =>
+    updateTask({ ...task, status: target.value })
+  );
 
   const editButton = createElement('button', '', '<span class="material-symbols-outlined">edit</span>');
   const deleteButton = createElement('button', '', '<span class="material-symbols-outlined">delete</span>');
