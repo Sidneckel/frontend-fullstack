@@ -3,7 +3,8 @@ const addForm = document.querySelector('.add-form');
 const inputTask = document.querySelector('.input-task');
 
 const fetchTasks = async () => {
-  const response = await fetch('http://localhost:30001/tasks')
+  const response = await fetch('http://10.96.90.39/tasks');
+
   const tasks = await response.json()
   return tasks;
 }
